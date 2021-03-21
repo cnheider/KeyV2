@@ -268,12 +268,58 @@ module top_of_key(){
   }
 }
 
-module keytext(text, position, font_size, depth) {
+module chamfered_text(legend_text,
+                          font,
+                          legend_size = 1,
+                          legend_depth = 2.0,
+                          chamfer_slope=0.4,
+                          chamfer_depth = -1.0,
+                          base_cube_size=500){
+  chamfer_depth = (chamfer_depth < 0)? legend_depth : chamfer_depth;
+  chamfer_width = legend_depth*chamfer_slope;
+  translate([0,0,legend_depth-chamfer_depth])
+    difference(){
+      translate([0,0,-(legend_depth-chamfer_depth)])
+        linear_extrude(legend_depth)
+          text(                text=legend_text, 
+                font=font,
+                size=legend_size,
+                valign="center",
+                halign="center");
+
+      minkowski(){
+        difference(){
+          cube([base_cube_size,base_cube_size,legend_depth],center=true);
+          
+          translate([0,0,-legend_depth]) // Carve out text off cube
+            linear_extrude(legend_depth*2)
+              text(   text=legend_text, 
+                font=font,
+                size=legend_size,
+                    valign="center",
+                    halign="center");
+        }
+
+        translate([0,0,legend_depth/2]) // Carve chamfer off text using pointy cylinder 
+          cylinder(chamfer_depth,
+                   r1=0,
+                    r2=chamfer_width);
+      }
+    }
+}
+
+module keytext(legend_text, position, font_size, depth) {
   woffset = (top_total_key_width()/3.5) * position[0];
   hoffset = (top_total_key_height()/3.5) * -position[1];
   translate([woffset, hoffset, -depth]){
-    color($tertiary_color) linear_extrude(height=$dish_depth){
-      text(text=text, font=$font, size=font_size, halign="center", valign="center");
+    color($tertiary_color) {
+      if ($inset_legend_chamfered) {
+        chamfered_text(legend_text, $font, font_size, $dish_depth, $inset_legend_chamfered_slope); // Very slow! but allows for much deeper insets without the nozzle hitting existing extrusions
+      }else{
+        linear_extrude(height=$dish_depth){
+          text(text=legend_text, font=$font, size=font_size, halign="center", valign="center");
+        }
+      }
     }
   }
 }

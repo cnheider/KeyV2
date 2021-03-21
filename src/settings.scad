@@ -15,6 +15,9 @@ $stem_inner_slop = 0.2;
 // Font size used for text
 $font_size = 6;
 
+$inset_legend_chamfered = false;
+$inset_legend_chamfered_slope = 0.8;
+
 // Set this to true if you're making a spacebar!
 $inverted_dish = false;
 
