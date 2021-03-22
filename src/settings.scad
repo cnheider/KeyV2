@@ -174,6 +174,8 @@ $alps_stem = [4.45, 2.25];
 // Enable stabilizer stems, to hold onto your cherry or costar stabilizers
 $stabilizer_type = "costar_stabilizer"; // [costar_stabilizer, cherry_stabilizer, disable]
 
+$stabilizer_stem_rotation = 0;
+
 // Ternaries are ONLY for customizer. they will NOT work if you're using this in
 // OpenSCAD. you should use stabilized(), openSCAD customizer,
 // or set $stabilizers directly

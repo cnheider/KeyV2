@@ -336,17 +336,17 @@ module keystem_positions(positions) {
   }
 }
 
-module support_for(positions, stem_type) {
+module support_for(positions, stem_type, stabilizer=false) {
   keystem_positions(positions) {
-    color($tertiary_color) supports($support_type, stem_type, $stem_throw, $total_depth - $stem_throw);
+    color($tertiary_color) supports($support_type, stem_type, $stem_throw, $total_depth - $stem_throw, stabilizer=stabilizer);
   }
 }
 
-module stems_for(positions, stem_type) {
+module stems_for(positions, stem_type, stabilizer=false) {
   keystem_positions(positions) {
-    color($tertiary_color) stem(stem_type, $total_depth, $stem_slop, $stem_throw);
+    color($tertiary_color) stem(stem_type, $total_depth, $stem_slop, $stem_throw, stabilizer=stabilizer);
     if ($stem_support_type != "disable") {
-      color($quaternary_color) stem_support($stem_support_type, stem_type, $stem_support_height, $stem_slop);
+      color($quaternary_color) stem_support($stem_support_type, stem_type, $stem_support_height, $stem_slop, stabilizer=stabilizer);
     }
   }
 }
@@ -451,8 +451,7 @@ module key(inset = false) {
   if ($stem_type != "disable" || ($stabilizers != [] && $stabilizer_type != "disable")) {
     dished($keytop_thickness, $inverted_dish) {
       translate([0, 0, $stem_inset]) {
-        if ($stabilizer_type != "disable") stems_for($stabilizers, $stabilizer_type);
-
+        if ($stabilizer_type != "disable") stems_for($stabilizers, $stabilizer_type, stabilizer=true);
         if ($stem_type != "disable") stems_for($stem_positions, $stem_type);
       }
     }
@@ -461,7 +460,7 @@ module key(inset = false) {
   if ($support_type != "disable"){
     inside() {
       translate([0, 0, $stem_inset]) {
-        if ($stabilizer_type != "disable") support_for($stabilizers, $stabilizer_type);
+        if ($stabilizer_type != "disable") support_for($stabilizers, $stabilizer_type, stabilizer=true);
 
         // always render stem support even if there isn't a stem.
         // rendering flat support w/no stem is much more common than a hollow keycap

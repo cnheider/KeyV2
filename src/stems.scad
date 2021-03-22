@@ -8,7 +8,9 @@ include <stems/cherry_stabilizer.scad>
 
 
 //whole stem, alps or cherry, trimmed to fit
-module stem(stem_type, depth, slop, throw){
+module stem(stem_type, depth, slop, throw, stabilizer=false){
+  stabilizer_rot = stabilizer?$stabilizer_stem_rotation:0;
+  rotate([0,0,stabilizer_rot]){
     if (stem_type == "alps") {
       alps_stem(depth, slop, throw);
     } else if (stem_type == "cherry" || stem_type == "costar_stabilizer") {
@@ -27,4 +29,5 @@ module stem(stem_type, depth, slop, throw){
       echo("Warning: unsupported $stem_type: ");
       echo(stem_type);
     }
+  }
 }
